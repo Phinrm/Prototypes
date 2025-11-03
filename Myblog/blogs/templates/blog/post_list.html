@@ -1,0 +1,131 @@
+{% extends "blog/base.html" %}
+{% load static %}
+{% block title %}{{ page_title|default:"Latest Posts" }}{% endblock %}
+{% block content %}
+
+<!-- Hero / Featured -->
+<section class="hero">
+  <div class="hero-text">
+    <h1>Fresh ideas. Practical guides.</h1>
+    <p>The homepage of a blogging site is your digital storefront—jump into our latest tutorials, opinions, and deep dives.</p>
+    <div class="hero-ctas">
+      <a class="btn" href="#">Start Reading</a>
+      <a class="btn secondary" href="#">Popular Posts</a>
+    </div>
+  </div>
+  <div class="hero-media">
+    <img src="{% static 'blog/hero.jpg' %}" alt="Hero" onerror="this.style.display='none'">
+  </div>
+</section>
+
+<!-- Recent Posts -->
+<section class="section">
+  <div class="section-head">
+    <h2>Recent Posts</h2>
+    {% if request.GET.q %}
+      <span class="muted">Results for “{{ request.GET.q }}”</span>
+    {% endif %}
+  </div>
+
+  {% if page_obj %}
+  <div class="cards">
+    {% for post in page_obj %}
+      <article class="card post">
+        <a class="thumb" href="{{ post.get_absolute_url }}">
+          {% if post.cover %}
+            <img src="{{ post.cover.url }}" alt="{{ post.title }}">
+          {% else %}
+            <div class="placeholder"></div>
+          {% endif %}
+        </a>
+        <div class="meta">
+          <div class="kicker">
+            {% if post.category %}
+              <a href="{{ post.category.get_absolute_url }}">{{ post.category.name }}</a>
+              ·
+            {% endif %}
+            {{ post.published_at|date:"M d, Y" }}
+          </div>
+          <h3><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h3>
+          <p class="excerpt">{{ post.body|truncatewords:30 }}</p>
+          <div class="tags">
+            {% for t in post.tags.all %}
+              <a href="{{ t.get_absolute_url }}" class="tag">{{ t.name }}</a>
+            {% empty %}
+              <span class="muted">—</span>
+            {% endfor %}
+          </div>
+          <div class="kicker">
+            {% if post.category %}<a href="{{ post.category.get_absolute_url }}">{{ post.category.name }}</a> · {% endif %}
+            {{ post.published_at|date:"M d, Y" }} · {{ post.read_time_minutes }} min read
+          </div>
+          <a class="btn tiny" href="{{ post.get_absolute_url }}">Read More →</a>
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination">
+    {% if page_obj.has_previous %}
+      <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}page={{ page_obj.previous_page_number }}">Prev</a>
+    {% endif %}
+    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+      <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}page={{ page_obj.next_page_number }}">Next</a>
+    {% endif %}
+  </div>
+  {% else %}
+    <p>No posts found.</p>
+  {% endif %}
+</section>
+
+<!-- Popular / Recommended -->
+{% if popular_posts %}
+<section class="section">
+  <div class="section-head">
+    <h2>Popular Reads</h2>
+  </div>
+  <div class="cards slim">
+    {% for post in popular_posts %}
+      <article class="card post compact">
+        <a class="thumb" href="{{ post.get_absolute_url }}">
+          {% if post.cover %}
+            <img src="{{ post.cover.url }}" alt="{{ post.title }}">
+          {% else %}
+            <div class="placeholder small"></div>
+          {% endif %}
+        </a>
+        <div class="meta">
+          <h3><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h3>
+          <div class="kicker">
+            {% if post.category %}<a href="{{ post.category.get_absolute_url }}">{{ post.category.name }}</a> · {% endif %}
+            {{ post.published_at|date:"M d, Y" }}
+          </div>
+          
+          <div class="kicker">
+            {% if post.category %}<a href="{{ post.category.get_absolute_url }}">{{ post.category.name }}</a> · {% endif %}
+            {{ post.published_at|date:"M d, Y" }} · {{ post.read_time_minutes }} min read
+          </div>
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- Category Cloud -->
+{% if categories %}
+<section class="section">
+  <div class="section-head">
+    <h2>Browse by Category</h2>
+  </div>
+  <div class="chips">
+    {% for c in categories %}
+      <a class="chip" href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "blog/base.html" %}
+{% block title %}Contact{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="card">
+    <h1>Contact</h1>
+    <p class="muted">Have feedback, collaboration ideas, or questions? Say hello.</p>
+    <form action="#" method="post" onsubmit="alert('Demo only'); return false;" class="form">
+      <div class="form-grid">
+        <p><label>Name<br><input type="text" required></label></p>
+        <p><label>Email<br><input type="email" required></label></p>
+        <p class="full"><label>Message<br><textarea rows="5" required></textarea></label></p>
+      </div>
+      <button class="btn" type="submit">Send Message</button>
+    </form>
+  </div>
+</section>
+{% endblock %}
