@@ -158,7 +158,7 @@ Open a pull request
 
  License
 
-This project is released under the MIT License.
+This project is open for contributions to anyone.
 
 Author
 
