@@ -1,4 +1,4 @@
-# GHMS v3 — Government Hospital Management System
+# GHMS — Government Hospital Management System
 
 End-to-end Django-based hospital management and accountability platform built for public/government facilities.
 
