@@ -283,7 +283,7 @@ Open a pull request
 
  License
 
-This project is open for contributions to anyone.
+This project is open for contributions but its implementation  requires my consent.
 
 Author
 
@@ -291,4 +291,3 @@ Developed by: Phineas Barasa
 Email: phinbarasa36@gmail.com
 
 
->>>>>>> 9b59231a9f5a43e661160643bcf43c0392bc6db2
