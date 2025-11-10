@@ -1,0 +1,28 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Create Account • MyBlog</title>
+  <link rel="stylesheet" href="{% static 'blog/styles.css' %}">
+</head>
+<body class="site">
+  <div class="container" style="max-width:520px;padding:40px 16px">
+    <div class="card">
+      <h1 style="margin-top:0">Create your account</h1>
+      <form method="post" class="form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        {% if request.GET.next %}
+          <input type="hidden" name="next" value="{{ request.GET.next }}">
+        {% endif %}
+        <button class="btn" type="submit">Sign up</button>
+      </form>
+      <p class="muted" style="margin-top:12px">
+        Already have an account?
+        <a href="{% url 'login' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">Log in</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

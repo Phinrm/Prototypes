@@ -1,0 +1,112 @@
+{% extends "blog/base.html" %}
+{% block title %}My Dashboard{% endblock %}
+{% block content %}
+
+<section class="section">
+    <section class="section">
+  <div class="cards slim">
+    <div class="card">
+      <h3 style="margin:0">Total Posts</h3>
+      <p class="detail-title" style="margin:.25rem 0 0">{{ totals.total_posts|default:0 }}</p>
+    </div>
+    <div class="card">
+      <h3 style="margin:0">Total Views</h3>
+      <p class="detail-title" style="margin:.25rem 0 0">{{ totals.total_views|default:0 }}</p>
+    </div>
+    <div class="card">
+      <h3 style="margin:0">Total Likes</h3>
+      <p class="detail-title" style="margin:.25rem 0 0">{{ totals.total_likes|default:0 }}</p>
+    </div>
+    <div class="card">
+      <h3 style="margin:0">Total Comments</h3>
+      <p class="detail-title" style="margin:.25rem 0 0">{{ totals.total_comments|default:0 }}</p>
+    </div>
+  </div>
+</section>
+
+{% if trending %}
+<section class="section">
+  <div class="section-head">
+    <h2>Trending (Your Top Posts)</h2>
+  </div>
+  <div class="cards slim">
+    {% for p in trending %}
+      <article class="card post compact">
+        <a class="thumb" href="{{ p.get_absolute_url }}">
+          {% if p.cover %}
+            <img src="{{ p.cover.url }}" alt="{{ p.title }}">
+          {% else %}
+            <div class="placeholder small"></div>
+          {% endif %}
+        </a>
+        <div class="meta">
+          <h3><a href="{{ p.get_absolute_url }}">{{ p.title }}</a></h3>
+          <div class="kicker">{{ p.view_count }} views · {{ p.like_count }} likes · {{ p.comment_count }} comments</div>
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+  <div class="section-head">
+    <h1>My Posts</h1>
+    <div style="margin-left:auto; display:flex; gap:8px; align-items:center">
+      <form method="get" action="" class="search" style="margin:0">
+        <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Search my posts…">
+        <button type="submit">🔎</button>
+      </form>
+      <form method="get" action="" style="margin:0">
+        <select name="status" onchange="this.form.submit()">
+          <option value="">All</option>
+          <option value="draft" {% if request.GET.status == 'draft' %}selected{% endif %}>Draft</option>
+          <option value="published" {% if request.GET.status == 'published' %}selected{% endif %}>Published</option>
+        </select>
+      </form>
+      <a class="btn tiny" href="{% url 'blogs:post_create' %}">Create New</a>
+    </div>
+  </div>
+
+  {% if page_obj %}
+  <div class="cards">
+    {% for post in page_obj %}
+      <article class="card post">
+        <a class="thumb" href="{{ post.get_absolute_url }}">
+          {% if post.cover %}
+            <img src="{{ post.cover.url }}" alt="{{ post.title }}">
+          {% else %}
+            <div class="placeholder"></div>
+          {% endif %}
+        </a>
+        <div class="meta">
+          <div class="kicker">
+            {{ post.status|title }}{% if post.published_at %} · {{ post.published_at|date:"M d, Y" }}{% endif %}
+            {% if post.category %} · <a href="{{ post.category.get_absolute_url }}">{{ post.category.name }}</a>{% endif %}
+            · 👁️ {{ post.view_count }} · ❤️ {{ post.like_count }} · 💬 {{ post.comment_count }}
+          </div>
+          <h3><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h3>
+          <p class="excerpt">{{ post.body|truncatewords:28 }}</p>
+          <div class="detail-actions" style="padding:0;margin-top:6px">
+            <a class="btn tiny" href="{% url 'blogs:post_update' post.slug %}">Edit</a>
+            <a class="btn tiny secondary" href="{% url 'blogs:post_delete' post.slug %}">Delete</a>
+          </div>
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+
+  <div class="pagination">
+    {% if page_obj.has_previous %}
+      <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Prev</a>
+    {% endif %}
+    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}{% if request.GET.status %}&status={{ request.GET.status }}{% endif %}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">Next</a>
+    {% endif %}
+  </div>
+  {% else %}
+    <p class="muted">No posts yet—click “Create New” to start writing.</p>
+  {% endif %}
+</section>
+
+{% endblock %}

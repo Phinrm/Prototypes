@@ -1,0 +1,78 @@
+{% extends "blog/base.html" %}
+{% block title %}{{ post.title }}{% endblock %}
+{% block content %}
+<article class="card post detail">
+  {% if post.cover %}
+    <img class="detail-cover" src="{{ post.cover.url }}" alt="{{ post.title }}">
+  {% endif %}
+  <div class="meta detail-meta">
+    <div class="kicker">
+      {% if post.category %}<a href="{{ post.category.get_absolute_url }}">{{ post.category.name }}</a> · {% endif %}
+      {{ post.published_at|date:"M d, Y" }} · {{ post.read_time_minutes }} min read · 👁️ {{ view_count }} · ❤️ {{ like_count }}
+      · by {{ post.author.get_username }}
+    </div>
+    <h1 class="detail-title">{{ post.title }}</h1>
+    <div class="tags">
+      {% for t in post.tags.all %}
+        <a href="{{ t.get_absolute_url }}" class="tag">{{ t.name }}</a>
+      {% empty %}
+        <span class="muted">—</span>
+      {% endfor %}
+    </div>
+    <div class="detail-actions" style="padding:8px 0 0">
+      {% if user.is_authenticated %}
+        <form action="{% url 'blogs:post_like_toggle' post.slug %}" method="post" style="display:inline">
+          {% csrf_token %}
+          <button class="btn tiny {% if liked %}{% else %}secondary{% endif %}" type="submit">
+            {% if liked %}❤️ Liked ({{ like_count }}){% else %}♡ Like ({{ like_count }}){% endif %}
+          </button>
+        </form>
+      {% else %}
+        <a class="btn tiny secondary" href="{% url 'login' %}?next={{ request.path }}">♡ Like ({{ like_count }})</a>
+      {% endif %}
+      {% if user.is_authenticated and user.id == post.author_id %}
+        <a class="btn tiny" href="{% url 'blogs:post_update' post.slug %}">Edit</a>
+        <a class="btn tiny secondary" href="{% url 'blogs:post_delete' post.slug %}">Delete</a>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="detail-body">
+    {{ post.body|linebreaks }}
+  </div>
+</article>
+
+<!-- Comments as you had -->
+<section class="section">
+  <h2>Comments ({{ post.comments.count }})</h2>
+  <div class="card">
+    {% for c in post.comments.all %}
+      {% if c.is_active %}
+        <div class="comment">
+          <div class="comment-head">
+            <strong>{{ c.name }}</strong>
+            <span class="muted">{{ c.created_at|date:"M d, Y H:i" }}</span>
+          </div>
+          <p>{{ c.body|linebreaks }}</p>
+        </div>
+        {% if not forloop.last %}<hr>{% endif %}
+      {% endif %}
+    {% empty %}
+      <p class="muted">No comments yet.</p>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="section">
+  <h2>Leave a comment</h2>
+  <div class="card">
+    <form action="{% url 'blogs:comment_create' post.slug %}" method="post" class="form">
+      {% csrf_token %}
+      <div class="form-grid">
+        {{ comment_form.as_p }}
+      </div>
+      <button class="btn" type="submit">Submit Comment</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

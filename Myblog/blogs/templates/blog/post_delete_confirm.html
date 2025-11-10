@@ -1,0 +1,15 @@
+{% extends "blog/base.html" %}
+{% block title %}Delete: {{ post.title }}{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="card">
+    <h2>Delete Post</h2>
+    <p>Are you sure you want to delete <strong>{{ post.title }}</strong>? This cannot be undone.</p>
+    <form method="post" class="form-inline">
+      {% csrf_token %}
+      <button class="btn" type="submit">Yes, delete</button>
+      <a class="btn secondary" href="{{ post.get_absolute_url }}">Cancel</a>
+    </form>
+  </div>
+</section>
+{% endblock %}
