@@ -1,14 +1,14 @@
-📝 Django Blogging Platform
+# Django Blogging Platform
 
 A modern multi-author blogging application built with Django.
 It supports secure authentication, responsive design, and a full author workflow — from writing to publishing and analytics.
 
-📖 Overview
+ Overview
 
 This platform allows multiple users to register, log in, and publish blog posts in a shared environment.
 Each author manages their own posts privately in the admin and dashboard while posts are publicly visible on the homepage after publication.
 
-🚀 Features
+# Features
 Core Features
 
 Multi-user blogging with per-author restrictions
@@ -49,7 +49,7 @@ Search bar for quick content discovery
 
 Clean layout with post thumbnails, excerpts, and “Read more” buttons
 
-🧩 Tech Stack
+Tech Stack
 Layer	Technology
 Backend Framework	Django 5
 Frontend	HTML5, CSS3, JavaScript
@@ -80,9 +80,9 @@ python manage.py runserver
 
 
 Visit the app at:
-👉 http://127.0.0.1:8000/
+ http://127.0.0.1:8000/
 
-🗂️ Project Structure
+Project Structure
 Myblog/
 │
 ├── blogs/
@@ -102,12 +102,12 @@ Myblog/
 ├── manage.py
 └── requirements.txt
 
-🔒 Permissions and Author Flow
+ Permissions and Author Flow
 Role	Access
 Superuser	Full control of posts, authors, categories, and tags
 Author	Can create, update, and delete only their own posts
 Visitor	Can view, like, and comment on posts
-📊 Analytics
+Analytics
 
 Each post tracks:
 
@@ -119,7 +119,7 @@ Total comments
 
 These are displayed in the Author Dashboard for personal insights.
 
-📱 Responsive Design
+ Responsive Design
 
 Mobile navigation menu transforms into a collapsible three-bar icon
 
@@ -127,7 +127,7 @@ Clean, readable typography for all devices
 
 Sidebar widgets for categories, trending posts, and search
 
-🧾 Deployment Checklist
+ Deployment Checklist
 
 Before deploying:
 
@@ -143,7 +143,7 @@ Use Gunicorn + Nginx for production
 
 Enable HTTPS with SSL certificates
 
-🧑‍💻 Contributing
+ Contributing
 
 Pull requests are welcome!
 To contribute:
@@ -156,11 +156,11 @@ Commit changes and push
 
 Open a pull request
 
-📄 License
+ License
 
 This project is released under the MIT License.
 
-👨‍🏫 Author
+Author
 
 Developed by: Phineas Barasa
 Email: phinbarasa36@gmail.com
