@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Messages{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Messages</h1>
+  <p class="page-subtitle">Secure internal communication within your hospital.</p>
+  <a href="{% url 'msg_compose' %}" class="btn btn-primary">+ Compose Message</a>
+</div>
+
+<div class="card">
+  {% if threads %}
+    <ul class="list">
+      {% for t in threads %}
+        <li class="list-item">
+          <a href="{% url 'msg_thread' t.id %}">
+            <strong>Thread #{{ t.id }}</strong>
+            <span class="muted">
+              Participants:
+              {{ t.participants.all|join:", " }}
+            </span>
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No active conversations yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

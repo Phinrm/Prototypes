@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Dashboard</h1>
+  <p class="page-subtitle">
+    Department: {{ department.name|default:"Unassigned" }}
+    {% if role_codes %}
+      · Roles:
+      {% for rc in role_codes %}
+        <span class="pill pill-xs">{{ rc }}</span>
+      {% endfor %}
+    {% endif %}
+  </p>
+</div>
+
+<section class="card">
+  <h2>My Shift &amp; DAAS Tracking</h2>
+
+  <form method="post" action="{% url 'set_shift' %}" class="shift-form">
+    {% csrf_token %}
+    <div class="shift-grid">
+      <div>
+        <label>Shift start</label>
+        <input type="datetime-local" name="shift_start"
+               value="{% if current_shift %}{{ current_shift.shift_start|date:'Y-m-d\\TH:i' }}{% endif %}">
+      </div>
+      <div>
+        <label>Expected end</label>
+        <input type="datetime-local" name="shift_end"
+               value="{% if current_shift %}{{ current_shift.shift_end|date:'Y-m-d\\TH:i' }}{% endif %}">
+      </div>
+      <div class="align-end">
+        <button type="submit" class="btn">Save Shift</button>
+      </div>
+    </div>
+    <p class="muted">
+      Your defined shift and in-system actions feed the DAAS AI engine and hash-chained audit ledger.
+    </p>
+  </form>
+
+  {% if current_shift %}
+    <div class="progress-wrapper">
+      <div class="progress-label">
+        Shift time progress:
+        {{ shift_time_pct }}%
+        ({{ current_shift.shift_start|time:"H:i" }} → {{ current_shift.shift_end|time:"H:i" }})
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: {{ shift_time_pct }}%;"></div>
+      </div>
+    </div>
+    {% if shift_ai_score %}
+      <div class="progress-wrapper mt-1">
+        <div class="progress-label">
+          DAAS AI activity score:
+          {{ shift_ai_score|floatformat:1 }}% — {{ shift_ai_label }}
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: {{ shift_ai_score }}%;"></div>
+        </div>
+      </div>
+    {% endif %}
+  {% endif %}
+</section>
+
+<section class="card mt-2">
+  <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+    <div>
+      <h2>Quick Actions</h2>
+      <p class="muted">Actions available based on your roles.</p>
+    </div>
+  </div>
+
+  <div class="quick-actions-grid">
+    {% if can_register_patient %}
+      <a href="{% url 'register_patient' %}" class="btn btn-primary">
+        Register patient
+      </a>
+    {% endif %}
+
+    {% if can_view_clinical_queue %}
+      <a href="{% url 'find_patient' %}" class="btn">Clinical Worklist</a>
+    {% endif %}
+
+    {% if can_invoice %}
+      <a href="{% url 'finance_dashboard' %}" class="btn">Finance Console</a>
+    {% endif %}
+
+    {% if can_audit %}
+      <a href="{% url 'audit_console' %}" class="btn">Audit &amp; Security Console</a>
+    {% endif %}
+
+    {% if can_use_messages %}
+      <a href="{% url 'msg_inbox' %}" class="btn">Messages</a>
+    {% endif %}
+  </div>
+</section>
+
+<section class="card">
+  <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+    <div>
+      <h2>Current Worklist</h2>
+      <p class="muted">Patients currently assigned to your department.</p>
+    </div>
+    <div style="display:flex; gap:8px;">
+      <a href="{% url 'attended_today' %}" class="btn">Attended Today</a>
+      <a href="{% url 'export_worklist_csv' %}" class="btn">Export CSV</a>
+      <a href="{% url 'export_worklist_pdf' %}" class="btn">Export PDF</a>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>UPI</th>
+        <th>Name</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if worklist %}
+        {% for p in worklist %}
+          <tr>
+            <td>{{ p.upi }}</td>
+            <td>{{ p.full_name }}</td>
+            <td>
+              <a href="{% url 'patient_detail' p.upi %}" class="btn btn-xs">Open</a>
+            </td>
+          </tr>
+        {% endfor %}
+      {% else %}
+        <tr>
+          <td colspan="3" style="text-align:center; padding:18px;">
+            No patients in your worklist.
+          </td>
+        </tr>
+      {% endif %}
+    </tbody>
+  </table>
+</section>
+
+{% endblock %}

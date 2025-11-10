@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2>Register Patient</h2>
+
+  <form method="post">
+    {% csrf_token %}
+
+    <div class="form-group">
+      <label>UPI</label>
+      <input type="text"
+             value="{{ upi_preview }}"
+             class="input"
+             disabled>
+      <small class="muted">Auto-generated. Cannot be edited.</small>
+    </div>
+
+    <div class="form-group">
+      <label>Full Name</label>
+      <input type="text" name="full_name" class="input" required>
+    </div>
+
+    <div class="form-group">
+      <label>National ID</label>
+      <input type="text" name="national_id" class="input" required>
+    </div>
+
+    <div class="form-group">
+      <label>Date of Birth</label>
+      <input type="date" name="dob" class="input">
+    </div>
+
+    <div class="form-group">
+      <label>Sex</label>
+      <select name="sex" class="input">
+        <option value="">-- Select --</option>
+        <option value="M">Male</option>
+        <option value="F">Female</option>
+        <option value="O">Other</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Phone</label>
+      <input type="text" name="phone" class="input">
+    </div>
+
+    <div class="form-group">
+      <label>Address</label>
+      <textarea name="address" class="input"></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save &amp; Open Patient</button>
+  </form>
+</div>
+{% endblock %}

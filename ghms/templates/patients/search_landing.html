@@ -1,0 +1,10 @@
+
+{% extends "base.html" %}
+{% block content %}
+<h3>Find Patient</h3>
+<ul>
+  <li><a href="{% url 'search_by_upi' %}">Search by UPI</a></li>
+  <li><a href="{% url 'search_by_national' %}">Search by National ID</a></li>
+  <li><a href="{% url 'search_by_phone' %}">Search by Phone (OTP)</a></li>
+</ul>
+{% endblock %}
