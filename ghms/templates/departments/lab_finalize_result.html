@@ -1,0 +1,6 @@
+
+{% extends "base.html" %}
+{% block content %}
+<h3>Finalize Lab Result — {{ patient.full_name }}</h3>
+<form method="post">{% csrf_token %}<textarea name="result" placeholder="Result text"></textarea><button>Finalize</button></form>
+{% endblock %}

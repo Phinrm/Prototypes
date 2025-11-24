@@ -1,0 +1,22 @@
+{% extends "blog/base.html" %}
+{% block title %}Become an Author{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="card">
+    <h1>Become an Author</h1>
+    <p class="muted">You’re logged in, but you don’t have author access yet.</p>
+    <p>To start publishing, request approval from the site admin. Once approved, you’ll be able to create, edit, and manage <em>your own</em> posts from your private dashboard.</p>
+
+    <h3>What to do</h3>
+    <ol>
+      <li>Contact the admin to grant you “Add Post” permission (<code>blogs.add_post</code>).</li>
+      <li>After approval, visit your <a href="{% url 'blogs:author_dashboard' %}">Dashboard</a> to create your first post.</li>
+    </ol>
+
+    <div class="cat-ctas" style="margin-top:10px">
+      <a class="btn" href="{% url 'blogs:author_dashboard' %}">Go to Dashboard</a>
+      <a class="btn secondary" href="{% url 'blogs:post_list' %}">Back to Home</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

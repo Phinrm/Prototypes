@@ -1,0 +1,7 @@
+
+{% extends "base.html" %}
+{% block content %}
+<h3>Radiology Report — {{ patient.full_name }}</h3>
+<p>Only role: RADIOLOGIST may sign.</p>
+<form method="post">{% csrf_token %}<textarea name="report" placeholder="Findings & Impression"></textarea><button>Sign Final Report</button></form>
+{% endblock %}

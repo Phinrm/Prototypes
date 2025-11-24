@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Attended Today</h1>
+
+<section class="card">
+  <p class="muted">
+    Showing patients or services recorded under your account today (demo view).
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Time</th>
+        <th>Patient</th>
+        <th>Service</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if logs %}
+        {% for log in logs %}
+          <tr>
+            <td>{{ log.created_at|date:"H:i" }}</td>
+            <td>{{ log.patient.full_name }}</td>
+            <td>{{ log.service.name }}</td>
+          </tr>
+        {% endfor %}
+      {% else %}
+        <tr>
+          <td colspan="3">No records found for today.</td>
+        </tr>
+      {% endif %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

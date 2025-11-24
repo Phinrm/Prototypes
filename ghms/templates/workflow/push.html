@@ -1,0 +1,12 @@
+
+{% extends "base.html" %}
+{% block content %}
+<h3>Push {{ patient.full_name }} ({{ patient.upi }}) to Next Department</h3>
+<form method="post">{% csrf_token %}
+  <label for="target">Select department</label>
+  <select name="target_department" id="target">
+    {% for t in targets %}<option value="{{ t.code }}">{{ t.name }}</option>{% endfor %}
+  </select>
+  <button>Push</button>
+</form>
+{% endblock %}

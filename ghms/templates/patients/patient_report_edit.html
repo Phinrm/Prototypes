@@ -1,0 +1,7 @@
+<h2>Patient Report for {{ patient.full_name }}</h2>
+<form method="post">
+  {% csrf_token %}
+  <textarea name="report_text" rows="10">{{ auto_summary }}</textarea>
+  <button type="submit">Save / Print</button>
+</form>
+<p class="muted">Auto-generated from all services; you may edit before printing.</p>

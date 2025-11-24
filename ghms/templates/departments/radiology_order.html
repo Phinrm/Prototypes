@@ -1,0 +1,6 @@
+
+{% extends "base.html" %}
+{% block content %}
+<h3>Create Radiology Order & Push — {{ patient.full_name }}</h3>
+<form method="post">{% csrf_token %}<input type="text" name="study" placeholder="Study (e.g., Chest X-Ray)" required><button>Create & Push</button></form>
+{% endblock %}

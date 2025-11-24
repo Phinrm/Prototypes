@@ -1,0 +1,11 @@
+
+Django==4.2.15
+djangorestframework==3.15.2
+djangorestframework-simplejwt==5.3.1
+mozilla-django-oidc==4.0.1
+psycopg2-binary==2.9.9
+redis==5.0.8
+python-json-logger==2.0.7
+drf-spectacular
+celery
+python-dotenv

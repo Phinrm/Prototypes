@@ -1,0 +1,69 @@
+
+{% extends "base.html" %}
+{% block content %}
+<article>
+  <h3>Patient: {{ patient.full_name }} ({{ patient.upi }})</h3>
+  <p><strong>National ID:</strong> {{ patient.national_id }} | <strong>Phone:</strong> {{ patient.phone }}</p>
+  <p><strong>Current Referral:</strong> {{ referral.to_department.name }} — <span class="badge">{{ referral.status }}</span></p>
+</article>
+
+<article>
+  <h4>Push to Next Department</h4>
+  <form method="post" action="{% url 'push_patient' patient.upi %}">{% csrf_token %}
+    <label for="target_department">Next Department</label>
+    <select name="target_department" id="target_department" required>
+      {% for d in all_departments %}<option value="{{ d.code }}">{{ d.name }}</option>{% endfor %}
+    </select>
+    <button>Push Patient</button>
+  </form>
+</article>
+
+{% if request.user.staffprofile.department.code == "OPD" %}
+<article>
+  <h4>OPD Actions</h4>
+  <ul>
+    <li><a href="{% url 'lab_create_order' patient.upi %}">Create Lab Order & Push</a></li>
+    <li><a href="{% url 'radiology_order' patient.upi %}">Create Radiology Order & Push</a></li>
+  </ul>
+</article>
+{% endif %}
+
+{% if request.user.staffprofile.department.code == "LAB" %}
+<article><h4>Lab</h4><a href="{% url 'lab_finalize_result' patient.upi %}">Finalize Lab Result</a></article>
+{% endif %}
+
+{% if request.user.staffprofile.department.code == "RAD" %}
+<article><h4>Radiology</h4><a href="{% url 'radiology_report' patient.upi %}">Sign Radiology Report</a></article>
+{% endif %}
+
+{% if request.user.staffprofile.department.code == "PHARM" %}
+<article>
+  <h4>Pharmacy</h4>
+  <form method="post" action="{% url 'pharmacy_dispense' patient.upi %}">{% csrf_token %}
+    <input type="text" name="drug" placeholder="Drug" required>
+    <input type="number" name="qty" value="1" min="1" required>
+    <button>Dispense</button>
+  </form>
+</article>
+{% endif %}
+
+{% if request.user.staffprofile.department.code == "FIN" %}
+<article>
+  <h4>Finance</h4>
+  <form method="post" action="{% url 'finance_invoice' patient.upi %}">{% csrf_token %}
+    <input type="number" step="0.01" name="amount" placeholder="Amount (KES)" required>
+    <button>Create Invoice</button>
+  </form>
+</article>
+{% endif %}
+<form method="post" action="{% url 'complete_department_process' patient.upi %}">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-danger btn-sm">
+    Complete Process for This Department
+  </button>
+  <p class="muted">
+    (Only allowed if all invoices are fully paid)
+  </p>
+</form>
+
+{% endblock %}

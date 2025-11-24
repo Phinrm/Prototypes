@@ -1,0 +1,156 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}My Blog{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="{% static 'blog/styles.css' %}">
+</head>
+<body class="site">
+  <!-- Header / Branding / Navigation -->
+ <header class="site-header">
+  <div class="container header-inner">
+    <a class="logo" href="{% url 'blogs:post_list' %}">My<span>Blog</span></a>
+    <form class="searchbar" action="{% url 'blogs:post_list' %}" method="get" role="search">
+      <input
+        type="search"
+        name="q"
+        value="{{ request.GET.q }}"
+        placeholder="Search articles"
+        aria-label="Search articles">
+      <button type="submit" aria-label="Search">🔎</button>
+    </form>
+    <!-- Hamburger -->
+    <button class="hamburger" aria-label="Toggle navigation" aria-controls="nav-menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+
+    <!-- Nav --><nav id="nav-menu" class="nav">
+  <a href="{% url 'blogs:post_list' %}">Home</a>
+  <a href="{% url 'blogs:about' %}">About</a>
+  <a href="{% url 'blogs:contact' %}">Contact</a>
+  <a href="{% url 'blogs:categories' %}">Categories</a>
+
+  {% if request.user.is_authenticated %}
+    <a href="{% url 'blogs:author_dashboard' %}">Dashboard</a>
+
+    {% if perms.blogs.add_post %}
+      <a class="btn tiny" href="{% url 'blogs:post_create' %}">Write a Post</a>
+    {% else %}
+      <a class="btn tiny" href="{% url 'blogs:author_apply' %}">Write a Post</a>
+    {% endif %}
+
+    <!-- ✅ Secure logout form (POST only) -->
+    <form method="post" action="{% url 'logout' %}" style="display:inline;">
+      {% csrf_token %}
+      <button type="submit" class="btn tiny" style="background:#e74c3c;color:white;border:none;cursor:pointer;">
+        Logout
+      </button>
+    </form>
+
+  {% else %}
+    <a class="btn tiny" href="{% url 'login' %}?next={% url 'blogs:post_create' %}">Write a Post</a>
+  {% endif %}
+</nav>
+  </div>
+ </header>
+
+  {% if messages %}
+  <div class="container">
+    <ul class="messages">
+      {% for m in messages %}<li>{{ m }}</li>{% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  <main class="container grid">
+    <section class="content">{% block content %}{% endblock %}</section>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="card">
+        <h3>About the Author</h3>
+        <div class="author">
+          <img src="{% static 'blog/author.jpg' %}" alt="Author" onerror="this.style.display='none'">
+          <p>Hi! I write about Django, Python, and shipping projects fast. Welcome. </p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Subscribe</h3>
+        <form action="#" method="post" onsubmit="alert('Demo only 🤣'); return false;">
+          <input type="email" placeholder="Your email" required>
+          <button type="submit">Subscribe</button>
+        </form>
+        <small>No spam. Unsubscribe anytime.</small>
+      </div>
+
+      <div class="card">
+        <h3>Follow</h3>
+        <div class="social">
+          <a href="#">Twitter/X</a>
+          <a href="#">GitHub</a>
+          <a href="#">LinkedIn</a>
+        </div>
+      </div>
+
+      {% if categories %}
+      <div class="card">
+        <h3>Categories</h3>
+        <ul class="list">
+          {% for c in categories %}
+            <li><a href="{{ c.get_absolute_url }}">{{ c.name }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+    </aside>
+  </main>
+
+  <footer class="site-footer">
+   <!-- footer -->
+<div class="footer-cta">
+  {% if request.user.is_authenticated and perms.blogs.add_post %}
+    <a class="btn" href="{% url 'blogs:post_create' %}">Write a Post</a>
+  {% elif request.user.is_authenticated %}
+    <a class="btn" href="{% url 'blogs:author_apply' %}">Write a Post</a>
+  {% else %}
+    <a class="btn" href="{% url 'login' %}?next={% url 'blogs:post_create' %}">Write a Post</a>
+    <a class="btn secondary" href="{% url 'blogs:signup' %}?next={% url 'blogs:post_create' %}">Create Account</a>
+  {% endif %}
+</div>
+  </footer>
+
+  
+{# Tiny, safe inline script at end of body (before </body>) #}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const btn = document.querySelector('.hamburger');
+  const menu = document.getElementById('nav-menu');
+  if (!btn || !menu) return;
+
+  function closeMenu() {
+    menu.classList.remove('open');
+    btn.setAttribute('aria-expanded', 'false');
+  }
+
+  btn.addEventListener('click', () => {
+    const open = menu.classList.toggle('open');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+
+  // Close when a nav link is clicked (mobile)
+  menu.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', closeMenu);
+  });
+
+  // Close on Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeMenu();
+  });
+});
+</script>
+
+</body>
+</html>

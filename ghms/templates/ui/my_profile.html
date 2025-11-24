@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2>My Profile</h2>
+
+  <h3>Account</h3>
+  <p><strong>Username:</strong> {{ user.username }}</p>
+  <p><strong>Name:</strong> {{ user.get_full_name|default:"(not set)" }}</p>
+  <p><strong>Email:</strong> {{ user.email|default:"(not set)" }}</p>
+
+  {% if staffprofile %}
+    <h3>Staff Details</h3>
+    {% if hospital %}
+      <p><strong>Hospital:</strong> {{ hospital.name }} ({{ hospital.code }})</p>
+    {% endif %}
+    {% if department %}
+      <p><strong>Department:</strong> {{ department.name }}</p>
+    {% endif %}
+    {% if roles %}
+      <p><strong>Roles:</strong>
+        {% for r in roles %}
+          <span class="pill pill-xs">{{ r.code }}</span>
+        {% endfor %}
+      </p>
+    {% else %}
+      <p><strong>Roles:</strong> None assigned</p>
+    {% endif %}
+  {% else %}
+    <p>No staff profile linked to this account.</p>
+  {% endif %}
+
+  {% if latest_shift %}
+    <h3>Current / Last Shift</h3>
+    <p><strong>Start:</strong> {{ latest_shift.shift_start }}</p>
+    <p><strong>End:</strong> {{ latest_shift.shift_end }}</p>
+    <p><strong>Status:</strong> {{ latest_shift.status }}</p>
+    <p><strong>AI Score:</strong> {{ latest_shift.score }}</p>
+  {% endif %}
+
+  {% if is_admin or is_auditor %}
+    <hr>
+    <h3>Admin / Auditor Insights</h3>
+
+    {% if recent_shifts %}
+      <p><strong>Recent Shifts:</strong></p>
+      <ul>
+        {% for s in recent_shifts %}
+          <li>{{ s.shift_start }} → {{ s.shift_end }} ({{ s.status }}, score {{ s.score }})</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    {% if recent_audit_logs %}
+      <p><strong>Recent Audit Events:</strong></p>
+      <ul>
+        {% for e in recent_audit_logs %}
+          <li>
+            {{ e.timestamp }} — {{ e.action }} — {{ e.meta|default:"" }}
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+
+  {% endif %}
+</div>
+{% endblock %}

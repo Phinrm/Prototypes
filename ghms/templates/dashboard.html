@@ -1,0 +1,27 @@
+
+{% extends "base.html" %}
+{% block content %}
+<h2>Department Worklist — {{ department.name }}</h2>
+<p><strong>Shift:</strong> {{ shift_window.0 }} → {{ shift_window.1 }} | <strong>Score:</strong> {{ shift.score }} | <strong>Status:</strong> {% if shift.verified %}<span class="badge">Verified</span>{% else %}<span class="badge">Unverified</span>{% endif %}</p>
+<div class="worklist">
+  <table>
+    <thead><tr><th>UPI</th><th>Name</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody>
+    {% for r in referrals %}
+      <tr>
+        <td>{{ r.patient.upi }}</td>
+        <td>{{ r.patient.full_name }}</td>
+        <td><span class="badge">{{ r.status }}</span></td>
+        <td>
+          <a href="{% url 'patient_detail' r.patient.upi %}">Open</a>
+          {% if r.status == "PENDING" %} | <a href="{% url 'accept_referral' r.id %}">Accept</a>
+          {% elif r.status == "IN_PROGRESS" %} | <a href="{% url 'complete_referral' r.id %}">Complete</a>{% endif %}
+        </td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="4">No referrals yet.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

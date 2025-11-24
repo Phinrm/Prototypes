@@ -1,0 +1,51 @@
+{% extends "blog/base.html" %}
+{% block title %}Categories{% endblock %}
+{% block content %}
+
+<section class="hero hero--mini">
+  <div class="hero-text">
+    <h1>Explore by Category</h1>
+    <p class="muted">
+      The map to your reading journey—3–7 broad topics that cover everything we publish.
+      Pick a lane, dive deep, and save your favorites for later.
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  {% if categories %}
+  <div class="cards categories-grid">
+    {% for c in categories %}
+      <article class="card cat-card">
+        <div class="cat-head">
+          <span class="cat-emoji">{{ c.emoji }}</span>
+          <h3 class="cat-title">
+            <a href="{{ c.obj.get_absolute_url }}">{{ c.display }}</a>
+          </h3>
+        </div>
+
+        <p class="muted small">({{ c.obj.num_posts }} post{% if c.obj.num_posts != 1 %}s{% endif %})</p>
+
+        <div class="cat-what">
+          <strong>What you'll find:</strong>
+          <p>{{ c.what }}</p>
+        </div>
+
+        <div class="cat-why">
+          <strong>Why it matters:</strong>
+          <p>{{ c.why }}</p>
+        </div>
+
+        <div class="cat-ctas">
+          <a class="btn tiny" href="{{ c.obj.get_absolute_url }}">View Posts →</a>
+          <a class="btn tiny secondary" href="#" onclick="alert('Demo: follow category'); return false;">Follow</a>
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+  {% else %}
+    <p class="muted">No categories yet. Add some in the admin and they’ll show here automatically.</p>
+  {% endif %}
+</section>
+
+{% endblock %}

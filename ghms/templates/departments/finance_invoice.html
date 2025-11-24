@@ -1,0 +1,6 @@
+
+{% extends "base.html" %}
+{% block content %}
+<h3>Create Invoice — {{ patient.full_name }}</h3>
+<form method="post">{% csrf_token %}<input type="number" step="0.01" name="amount" placeholder="Amount (KES)" required><button>Create Invoice</button></form>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Find Patient</h1>
+
+<section class="card">
+  <form method="get" class="grid">
+    <input type="text"
+           name="q"
+           placeholder="Search by UPI or Name"
+           value="{{ query|default:'' }}">
+    <button type="submit">Search</button>
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>UPI</th>
+        <th>Name</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if patients %}
+        {% for p in patients %}
+          <tr>
+            <td>{{ p.upi }}</td>
+            <td>{{ p.full_name }}</td>
+          </tr>
+        {% endfor %}
+      {% elif query %}
+        <tr>
+          <td colspan="2">No patients found for "{{ query }}".</td>
+        </tr>
+      {% else %}
+        <tr>
+          <td colspan="2">Enter a UPI or name to search.</td>
+        </tr>
+      {% endif %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

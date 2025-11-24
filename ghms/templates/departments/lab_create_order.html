@@ -1,0 +1,6 @@
+
+{% extends "base.html" %}
+{% block content %}
+<h3>Create Lab Order & Push — {{ patient.full_name }}</h3>
+<form method="post">{% csrf_token %}<input type="text" name="test_code" placeholder="Test Code (e.g., FBC)" required><button>Create & Push</button></form>
+{% endblock %}

@@ -1,0 +1,15 @@
+<h2>Dispense Drugs for {{ patient.full_name }}</h2>
+<form method="post">
+  {% csrf_token %}
+  <table>
+    <tr><th>Drug</th><th>Price</th><th>Qty</th></tr>
+    {% for d in drugs %}
+    <tr>
+      <td>{{ d.name }}</td>
+      <td>{{ d.unit_price }}</td>
+      <td><input type="number" name="drug_{{ d.id }}" min="0"></td>
+    </tr>
+    {% endfor %}
+  </table>
+  <button type="submit">Save & Send to Finance</button>
+</form>

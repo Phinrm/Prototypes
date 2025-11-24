@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Compose Message{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Compose Message</h1>
+  <p class="page-subtitle">Search and message registered staff within your hospital.</p>
+</div>
+
+<form method="get" class="card mb-2">
+  <label for="q">Search staff</label>
+  <div class="inline-inputs">
+    <input type="text" id="q" name="q" value="{{ query }}" placeholder="Name or username" class="input" />
+    <button type="submit" class="btn btn-outline">Search</button>
+  </div>
+</form>
+
+<form method="post" class="card">
+  {% csrf_token %}
+  <div class="form-group">
+    <label for="recipient">Recipient</label>
+    <select name="recipient" id="recipient" class="input" required>
+      <option value="">-- Select recipient --</option>
+      {% for r in recipients %}
+        <option value="{{ r.user.id }}">
+          {{ r.user.get_full_name|default:r.user.username }}
+          {% if r.user.staffprofile.department %}
+            ({{ r.user.staffprofile.department.code }})
+          {% endif %}
+          - {{ r.shift_status|title }}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="body">Message</label>
+    <textarea id="body" name="body" rows="4" class="input" required></textarea>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Send Message</button>
+  <a href="{% url 'msg_inbox' %}" class="btn btn-outline">Cancel</a>
+</form>
+
+{% if not recipients and query %}
+  <p class="muted mt-1">No matching staff found.</p>
+{% endif %}
+{% endblock %}

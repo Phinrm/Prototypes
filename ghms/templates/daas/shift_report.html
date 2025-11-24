@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>DAAS Shift Oversight</h1>
+
+<section class="card">
+  <p class="muted">
+    Latest staff shifts with DAAS AI / rules scores. Tamper-evident logs are stored in the audit ledger.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Staff</th>
+        <th>Shift Start</th>
+        <th>Shift End</th>
+        <th>Score</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if shifts %}
+        {% for s in shifts %}
+          <tr>
+            <td>{{ s.user.username }}</td>
+            <td>{{ s.shift_start }}</td>
+            <td>{{ s.shift_end }}</td>
+            <td>{{ s.score|default:"-" }}</td>
+            <td>{{ s.status|default:"-" }}</td>
+          </tr>
+        {% endfor %}
+      {% else %}
+        <tr>
+          <td colspan="5">No shift summaries available.</td>
+        </tr>
+      {% endif %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

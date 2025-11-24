@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block title %}Security & Audit Console{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Security & Audit Console</h1>
+    <p class="subtitle">
+      Cryptographically chained audit trail: monitor shifts, access, and clinical actions.
+    </p>
+  </div>
+</div>
+
+<div class="cards-grid">
+  <div class="card pill-card">
+    <div class="card-label">Total Audit Events</div>
+    <div class="card-value">{{ total_events|default:"0" }}</div>
+  </div>
+  <div class="card pill-card">
+    <div class="card-label">Last Event</div>
+    <div class="card-value">
+      {% if last_event %}
+        {{ last_event.created_at }} · {{ last_event.action }}
+      {% else %}
+        No events logged yet
+      {% endif %}
+    </div>
+  </div>
+  <div class="card pill-card">
+    <div class="card-label">Hash Chain Status</div>
+    <div class="card-value status-ok">
+      {% if chain_ok %}OK – Intact{% else %}⚠ Inconsistent{% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-header">
+    <h2>Recent Audit Trail</h2>
+    <span class="hint">Showing latest {{ logs|length }} events</span>
+  </div>
+
+  <div class="table-wrapper">
+    <table class="ghms-table">
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>User</th>
+          <th>Action</th>
+          <th>Details</th>
+          <th>Prev Hash</th>
+          <th>Hash</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if logs %}
+          {% for e in logs %}
+            <tr>
+              <td>{{ e.created_at }}</td>
+              <td>
+                {% if e.actor %}
+                  {{ e.actor.username }}
+                {% else %}
+                  &mdash;
+                {% endif %}
+              </td>
+              <td>{{ e.action }}</td>
+              <td>
+                {% if e.meta %}
+                  <code class="meta-snippet">
+                    {{ e.meta|truncatechars:80 }}
+                  </code>
+                {% else %}
+                  &mdash;
+                {% endif %}
+              </td>
+              <td class="hash-col">
+                {{ e.prev_hash|default:"—"|truncatechars:16 }}
+              </td>
+              <td class="hash-col">
+                {{ e.entry_hash|default:e.hash|default:"—"|truncatechars:16 }}
+              </td>
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="6" class="empty-state">
+              No audit records found yet.
+            </td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<style>
+  .page-header {
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:1rem;
+    margin-bottom:1.5rem;
+  }
+  .page-header h1 {
+    font-size:1.6rem;
+    margin:0;
+  }
+  .page-header .subtitle {
+    margin:0.2rem 0 0;
+    font-size:0.9rem;
+    color:#6b7280;
+  }
+  .cards-grid {
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:0.9rem;
+    margin-bottom:1.5rem;
+  }
+  .card {
+    background:#0f172a;
+    color:#e5e7eb;
+    padding:0.9rem 1rem;
+    border-radius:0.9rem;
+    box-shadow:0 10px 25px rgba(15,23,42,0.35);
+    border:1px solid rgba(148,163,253,0.18);
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+  }
+  .card-label {
+    font-size:0.7rem;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:#9ca3af;
+  }
+  .card-value {
+    font-size:1.2rem;
+    font-weight:600;
+    margin-top:0.35rem;
+  }
+  .status-ok {
+    color:#22c55e;
+  }
+  .panel {
+    background:#020817;
+    border-radius:1rem;
+    padding:1rem;
+    border:1px solid rgba(75,85,99,0.7);
+    box-shadow:0 18px 40px rgba(15,23,42,0.45);
+  }
+  .panel-header {
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom:0.8rem;
+  }
+  .panel-header h2 {
+    font-size:1rem;
+    margin:0;
+    color:#e5e7eb;
+  }
+  .panel-header .hint {
+    font-size:0.75rem;
+    color:#9ca3af;
+  }
+  .table-wrapper {
+    overflow-x:auto;
+  }
+  .ghms-table {
+    width:100%;
+    border-collapse:collapse;
+    font-size:0.78rem;
+    color:#e5e7eb;
+  }
+  .ghms-table thead {
+    background:rgba(15,23,42,0.98);
+  }
+  .ghms-table th,
+  .ghms-table td {
+    padding:0.55rem 0.6rem;
+    border-bottom:1px solid rgba(75,85,99,0.65);
+    white-space:nowrap;
+  }
+  .ghms-table th {
+    font-weight:600;
+    font-size:0.7rem;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    color:#9ca3af;
+  }
+  .ghms-table tbody tr:hover {
+    background:rgba(17,24,39,0.95);
+  }
+  .meta-snippet {
+    background:rgba(15,23,42,0.85);
+    padding:0.15rem 0.35rem;
+    border-radius:0.35rem;
+    font-size:0.7rem;
+    color:#9ca3af;
+  }
+  .hash-col {
+    font-family:monospace;
+    font-size:0.65rem;
+    color:#6b7280;
+  }
+  .empty-state {
+    text-align:center;
+    padding:1.2rem 0;
+    color:#9ca3af;
+    font-size:0.8rem;
+  }
+  @media (max-width:900px){
+    .cards-grid {
+      grid-template-columns:repeat(1,minmax(0,1fr));
+    }
+  }
+</style>
+{% endblock %}
